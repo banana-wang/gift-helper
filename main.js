@@ -93,12 +93,20 @@ submitBtn.addEventListener("click", async () => {
       card.className = "gift-card";
 
       card.innerHTML = `
-        <img src="${item.image}" alt="${item.name}" />
-        <h3>${item.name}</h3>
-        <p><strong>价格：</strong>${item.price}</p>
-        <p>${item.reason}</p>
-        <a href="${item.link}" target="_blank">查看商品</a>
-      `;
+  <div class="gift-image">
+    <img src="${item.image}" alt="${item.name}">
+  </div>
+
+  <div class="gift-content">
+    <h3>${item.name}</h3>
+    <p class="price">${item.price}</p>
+    <p class="reason">${item.reason}</p>
+    <a href="${item.link}" target="_blank" class="buy-btn">
+      去淘宝看看 →
+    </a>
+  </div>
+`;
+
 
       resultDiv.appendChild(card);
     });
