@@ -24,19 +24,37 @@ export async function handler(event) {
 ]
 `;
 
-    const response = await fetch("https://api.deepseek.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${process.env.DEEPSEEK_KEY}`
-      },
-      body: JSON.stringify({
-        model: "deepseek-chat",
-        messages: [{ role: "user", content: prompt }]
-      })
-    });
+    const result = await fetch("https://api.deepseek.com/v1/chat/completions", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${process.env.DEEPSEEK_KEY}`
+  },
+  body: JSON.stringify({
+    model: "deepseek-chat",
+    messages: [
+      { role: "system", content: "你是一个礼物推荐助手" },
+      { role: "user", content: userInput }
+    ]
+  })
+});
 
-    const data = await response.json();
+const text = await result.text();
+
+let data;
+
+try {
+  data = JSON.parse(text);
+} catch (err) {
+  return {
+    statusCode: 500,
+    body: JSON.stringify({
+      error: "AI返回格式错误",
+      raw: text
+    })
+  };
+}
+
 
     const content = data.choices[0].message.content;
 
