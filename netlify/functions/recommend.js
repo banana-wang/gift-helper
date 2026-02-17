@@ -67,9 +67,12 @@ export async function handler(event) {
     const reply = data.choices[0].message.content;
 
     return {
-      statusCode: 200,
-      body: reply
-    };
+  statusCode: 200,
+  body: JSON.stringify({
+    result: reply
+  })
+};
+
 
   } catch (error) {
     return {
@@ -78,3 +81,4 @@ export async function handler(event) {
     };
   }
 }
+
