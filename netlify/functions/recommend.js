@@ -1,7 +1,21 @@
 export async function handler(event) {
   try {
-    const body = JSON.parse(event.body);
+    // ✅ 1. 安全解析 body
+    let body;
 
+    try {
+      body = event.body ? JSON.parse(event.body) : {};
+    } catch (err) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({
+          error: "请求体格式错误",
+          detail: err.message
+        })
+      };
+    }
+
+    // ✅ 2. 生成提示词
     const prompt = `
 你是一个送礼推荐专家。
 根据以下条件推荐3个具体淘宝礼物。
@@ -24,6 +38,7 @@ export async function handler(event) {
 ]
 `;
 
+    // ✅ 3. 调用 DeepSeek
     const response = await fetch("https://api.deepseek.com/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -35,13 +50,15 @@ export async function handler(event) {
         messages: [
           { role: "system", content: "你是一个礼物推荐助手" },
           { role: "user", content: prompt }
-        ]
+        ],
+        temperature: 0.7
       })
     });
 
     const rawText = await response.text();
 
     let data;
+
     try {
       data = JSON.parse(rawText);
     } catch (error) {
@@ -66,19 +83,21 @@ export async function handler(event) {
 
     const reply = data.choices[0].message.content;
 
+    // ✅ 4. 直接把模型返回内容原样传给前端
     return {
-  statusCode: 200,
-  body: JSON.stringify({
-    result: reply
-  })
-};
-
+      statusCode: 200,
+      body: JSON.stringify({
+        result: reply
+      })
+    };
 
   } catch (error) {
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: "推荐失败", detail: error.message })
+      body: JSON.stringify({
+        error: "推荐失败",
+        detail: error.message
+      })
     };
   }
 }
-
