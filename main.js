@@ -101,7 +101,7 @@ submitBtn.addEventListener("click", async () => {
     <h3>${item.name}</h3>
     <p class="price">${item.price}</p>
     <p class="reason">${item.reason}</p>
-   <a href="https://s.taobao.com/search?q=${encodeURIComponent(item.name)}"
+  <a href="https://so.m.taobao.com/search?q=${encodeURIComponent(item.name)}"
    target="_blank"
    class="buy-btn">
  
