@@ -24,7 +24,7 @@ export async function handler(event) {
 ]
 `;
 
-    const result = await fetch("https://api.deepseek.com/v1/chat/completions", {
+  const response = await fetch("https://api.deepseek.com/v1/chat/completions", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
@@ -39,21 +39,39 @@ export async function handler(event) {
   })
 });
 
-const text = await result.text();
+const rawText = await response.text();
 
 let data;
 
 try {
-  data = JSON.parse(text);
-} catch (err) {
+  data = JSON.parse(rawText);
+} catch (error) {
   return {
     statusCode: 500,
     body: JSON.stringify({
-      error: "AI返回格式错误",
-      raw: text
+      error: "DeepSeek返回格式错误",
+      raw: rawText
     })
   };
 }
+
+if (!data.choices || !data.choices[0]) {
+  return {
+    statusCode: 500,
+    body: JSON.stringify({
+      error: "DeepSeek返回内容异常",
+      raw: data
+    })
+  };
+}
+
+const reply = data.choices[0].message.content;
+
+return {
+  statusCode: 200,
+  body: JSON.stringify({ result: reply })
+};
+
 
 
     const content = data.choices[0].message.content;
