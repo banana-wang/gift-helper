@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>送礼物小助手</title>
+  <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="container">
+  <h1>🎁 凯萱的送礼物小助手</h1>
+
+  <!-- 1. 预算 -->
+  <section class="card">
+    <h2>💰 预算范围</h2>
+    <div class="options" data-field="budget">
+      <button>50元以内</button>
+      <button>50-100</button>
+      <button>100-200</button>
+      <button>200-500</button>
+      <button>500元以上</button>
+    </div>
+    <input id="budget" type="number" placeholder="或者手动输入预算（元）" />
+  </section>
+
+  <!-- 2. 送礼方向 -->
+  <section class="card">
+    <h2>🎯 送礼方向</h2>
+    <div class="options" data-field="target">
+      <button>美妆护肤</button>
+      <button>数码科技</button>
+      <button>家居生活</button>
+      <button>文创手作</button>
+      <button>运动户外</button>
+      <button>服饰配饰</button>
+      <button>美食零食</button>
+      <button>萌宠用品</button>
+    </div>
+    <input id="target" type="text" placeholder="或者你自己描述送礼方向…" />
+  </section>
+
+  <!-- 3. 礼物质感 -->
+  <section class="card">
+    <h2>✨ 礼物质感</h2>
+    <div class="options" data-field="style">
+      <button>实用型</button>
+      <button>精致型</button>
+      <button>创意型</button>
+      <button>奢华型</button>
+    </div>
+    <input id="style" type="text" hidden />
+  </section>
+
+  <!-- 4. 送礼场景 -->
+  <section class="card">
+    <h2>🎉 送礼场景</h2>
+    <div class="options" data-field="scene">
+      <button>生日</button>
+      <button>节日</button>
+      <button>纪念日</button>
+      <button>感谢答谢</button>
+      <button>乔迁新居</button>
+      <button>毕业升学</button>
+      <button>结婚喜事</button>
+      <button>随便送送</button>
+    </div>
+    <input id="scene" type="text" hidden />
+  </section>
+
+  <!-- 5. 喜好描述 -->
+  <section class="card">
+    <h2>💬 朋友的喜好</h2>
+    <textarea id="hobby" placeholder="描述一下朋友的喜好吧，比如喜欢粉色、喜欢滑雪、养了一只猫等…"></textarea>
+  </section>
+
+  <button id="submit-btn" class="submit-btn">✨ 帮我推荐礼物</button>
+
+  <div id="result" style="margin-top: 30px;"></div>
+</div>
+
+<script>
+  // 选项按钮绑定逻辑
+  document.querySelectorAll(".options").forEach(group => {
+    const field = group.dataset.field;
+    const input = document.getElementById(field);
+    group.querySelectorAll("button").forEach(btn => {
+      btn.addEventListener("click", () => {
+        group.querySelectorAll("button").forEach(b => b.classList.remove("selected"));
+        btn.classList.add("selected");
+        input.value = btn.textContent; // 同步到 input
+      });
+    });
+  });
+
+  // 提交按钮点击事件
+  document.getElementById("submit-btn").addEventListener("click", async () => {
+    const budget = document.getElementById("budget").value;
+    const target = document.getElementById("target").value;
+    const style = document.getElementById("style").value;
+    const scene = document.getElementById("scene").value;
+    const hobby = document.getElementById("hobby").value;
+
+    // 简单校验，确保必填字段有值
+    if (!budget && !target && !style && !scene && !hobby) {
+      alert("请至少填写或选择一个条件！");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:3000/api/test", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ budget, target, style, scene, hobby })
+      });
+
+      const data = await response.json();
+
+      let html = `<h3>${data.message}</h3>`;
+      data.gifts.forEach(gift => {
+        html += `
+        <div style="border:1px solid #ddd;padding:12px;margin:12px 0;border-radius:8px;">
+          <h4>🎁 <a href="https://s.taobao.com/search?q=${encodeURIComponent(gift.name)}" target="_blank">${gift.name}</a></h4>
+          <p>推荐理由：${gift.reason}</p>
+          <p>价格区间：￥${gift.price}</p>
+          <a href="https://s.taobao.com/search?q=${encodeURIComponent(gift.name)}" target="_blank"
+            style="display:inline-block;margin-top:8px;padding:6px 12px;background:#ff5000;color:white;border-radius:6px;text-decoration:none;font-size:14px;">
+            去淘宝看看
+          </a>
+        </div>`;
+      });
+
+      document.getElementById("result").innerHTML = html;
+
+    } catch (err) {
+      console.error(err);
+      document.getElementById("result").innerHTML = "<p style='color:red;'>请求出错，请检查后端服务是否启动。</p>";
+    }
+  });
+  </script>
+<script src="main.js"></script>
+</body>
+</html>

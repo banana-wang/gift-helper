@@ -1,0 +1,93 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "ZCOOL KuaiLe", cursive;
+  background: linear-gradient(135deg, #ffe4f0, #e0fff5);
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1rem 4rem;
+}
+
+h1 {
+  text-align: center;
+  font-size: 2.2rem;
+  margin-bottom: 2rem;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  backdrop-filter: blur(8px);
+}
+
+.card h2 {
+  margin-top: 0;
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+}
+
+.options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.options button {
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 1rem;
+  cursor: pointer;
+  background: linear-gradient(135deg, #ffd6e8, #c8fff1);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  transition: all 0.2s;
+}
+
+.options button:hover {
+  transform: translateY(-2px);
+}
+
+input, textarea {
+  width: 100%;
+  border-radius: 1rem;
+  border: none;
+  padding: 0.8rem 1rem;
+  font-size: 1rem;
+  font-family: inherit;
+  background: #f7f7f7;
+}
+
+textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.submit-btn {
+  width: 100%;
+  margin-top: 2rem;
+  padding: 1rem;
+  font-size: 1.3rem;
+  border-radius: 1.5rem;
+  border: none;
+  font-family: inherit;
+  cursor: pointer;
+  background: linear-gradient(135deg, #ffb3d9, #9be7ff);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+.options button.active {
+  background: linear-gradient(135deg, #ff7ab8, #7adfff);
+  color: white;
+  transform: translateY(-2px);
+}
